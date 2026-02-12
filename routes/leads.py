@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from database import cursor, conn
 
 router = APIRouter()
@@ -14,8 +14,13 @@ def criar_lead(lead: dict):
 
 
 @router.get("/leads")
-def listar_leads():
-    cursor.execute("SELECT * FROM leads")
+def listar_leads(status: str = Query(None)):
+    
+    if status:
+        cursor.execute("SELECT * FROM leads WHERE status = ?", (status,))
+    else:
+        cursor.execute("SELECT * FROM leads")
+    
     dados = cursor.fetchall()
 
     leads = []
