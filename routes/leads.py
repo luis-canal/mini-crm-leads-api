@@ -16,8 +16,19 @@ def criar_lead(lead: dict):
 @router.get("/leads")
 def listar_leads():
     cursor.execute("SELECT * FROM leads")
-    return cursor.fetchall()
+    dados = cursor.fetchall()
 
+    leads = []
+    for lead in dados:
+        leads.append({
+            "id": lead[0],
+            "nome": lead[1],
+            "telefone": lead[2],
+            "carro": lead[3],
+            "status": lead[4]
+        })
+
+    return leads
 
 @router.put("/leads/{lead_id}")
 def atualizar_status(lead_id: int, status: str):
