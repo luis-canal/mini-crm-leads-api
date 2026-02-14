@@ -1,16 +1,27 @@
 from fastapi import APIRouter, Query
 from database import cursor, conn
+from models import LeadCreate, LeadResponse, StatusUpdate
 
 router = APIRouter()
 
-@router.post("/leads")
-def criar_lead(lead: dict):
+@router.post("/leads", response_model=LeadResponse)
+def criar_lead(lead: LeadCreate):
+
     cursor.execute(
         "INSERT INTO leads (nome, telefone, carro, status) VALUES (?, ?, ?, ?)",
-        (lead["nome"], lead["telefone"], lead["carro"], "novo")
+        (lead.nome, lead.telefone, lead.carro, "novo")
     )
     conn.commit()
-    return {"msg": "Lead criado"}
+
+    lead_id = cursor.lastrowid
+
+    return {
+        "id": lead_id,
+        "nome": lead.nome,
+        "telefone": lead.telefone,
+        "carro": lead.carro,
+        "status": "novo"
+    }
 
 
 @router.get("/leads")
@@ -56,13 +67,15 @@ def listar_leads(
     return leads
 
 @router.put("/leads/{lead_id}")
-def atualizar_status(lead_id: int, status: str):
+def atualizar_status(lead_id: int, status_update: StatusUpdate):
+
     cursor.execute(
         "UPDATE leads SET status=? WHERE id=?",
-        (status, lead_id)
+        (status_update.status, lead_id)
     )
     conn.commit()
-    return {"msg": "Atualizado"}
+
+    return {"msg": "Status atualizado"}
 
 
 @router.delete("/leads/{lead_id}")
