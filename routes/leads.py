@@ -14,13 +14,33 @@ def criar_lead(lead: dict):
 
 
 @router.get("/leads")
-def listar_leads(status: str = Query(None)):
-    
+def listar_leads(
+    status: str = Query(None),
+    carro: str = Query(None),
+    limit: int = Query(10, ge=1),
+    offset: int = Query(0, ge=0)
+):
+
+    query = "SELECT * FROM leads"
+    filtros = []
+    valores = []
+
     if status:
-        cursor.execute("SELECT * FROM leads WHERE status = ?", (status,))
-    else:
-        cursor.execute("SELECT * FROM leads")
-    
+        filtros.append("status = ?")
+        valores.append(status)
+
+    if carro:
+        filtros.append("carro = ?")
+        valores.append(carro)
+
+    if filtros:
+        query += " WHERE " + " AND ".join(filtros)
+
+    query += " LIMIT ? OFFSET ?"
+    valores.append(limit)
+    valores.append(offset)
+
+    cursor.execute(query, tuple(valores))
     dados = cursor.fetchall()
 
     leads = []
