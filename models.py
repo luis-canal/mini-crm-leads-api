@@ -18,3 +18,11 @@ class LeadResponse(BaseModel):
 
 class StatusUpdate(BaseModel):
     status: Literal["novo", "contatado", "vendido", "perdido"]
+
+class LeadStats(BaseModel):
+    total_leads: int
+    novos: int
+    contatados: int
+    vendidos: int
+    perdidos: int
+    taxa_conversao: float

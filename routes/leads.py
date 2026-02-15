@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query
 from database import cursor, conn
-from models import LeadCreate, LeadResponse, StatusUpdate
+from models import LeadCreate, LeadResponse, StatusUpdate, LeadStats
 
 router = APIRouter()
 
@@ -83,3 +83,34 @@ def deletar(lead_id: int):
     cursor.execute("DELETE FROM leads WHERE id=?", (lead_id,))
     conn.commit()
     return {"msg": "Deletado"}
+
+@router.get("/leads/stats", response_model=LeadStats)
+def estatisticas():
+
+    cursor.execute("SELECT COUNT(*) FROM leads")
+    total = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM leads WHERE status='novo'")
+    novos = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM leads WHERE status='contatado'")
+    contatados = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM leads WHERE status='vendido'")
+    vendidos = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM leads WHERE status='perdido'")
+    perdidos = cursor.fetchone()[0]
+
+    taxa = 0
+    if total > 0:
+        taxa = round((vendidos / total) * 100, 2)
+
+    return {
+        "total_leads": total,
+        "novos": novos,
+        "contatados": contatados,
+        "vendidos": vendidos,
+        "perdidos": perdidos,
+        "taxa_conversao": taxa
+    }
