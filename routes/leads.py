@@ -90,27 +90,35 @@ def estatisticas():
     cursor.execute("SELECT COUNT(*) FROM leads")
     total = cursor.fetchone()[0]
 
-    cursor.execute("SELECT COUNT(*) FROM leads WHERE status='novo'")
-    novos = cursor.fetchone()[0]
+    cursor.execute("""
+        SELECT status, COUNT(*) 
+        FROM leads 
+        GROUP BY status
+    """)
 
-    cursor.execute("SELECT COUNT(*) FROM leads WHERE status='contatado'")
-    contatados = cursor.fetchone()[0]
+    resultado = cursor.fetchall()
 
-    cursor.execute("SELECT COUNT(*) FROM leads WHERE status='vendido'")
-    vendidos = cursor.fetchone()[0]
+    # valores padrão
+    stats = {
+        "novo": 0,
+        "contatado": 0,
+        "vendido": 0,
+        "perdido": 0
+    }
 
-    cursor.execute("SELECT COUNT(*) FROM leads WHERE status='perdido'")
-    perdidos = cursor.fetchone()[0]
+    # preencher com dados reais
+    for status, quantidade in resultado:
+        stats[status] = quantidade
 
     taxa = 0
     if total > 0:
-        taxa = round((vendidos / total) * 100, 2)
+        taxa = round((stats["vendido"] / total) * 100, 2)
 
     return {
         "total_leads": total,
-        "novos": novos,
-        "contatados": contatados,
-        "vendidos": vendidos,
-        "perdidos": perdidos,
+        "novos": stats["novo"],
+        "contatados": stats["contatado"],
+        "vendidos": stats["vendido"],
+        "perdidos": stats["perdido"],
         "taxa_conversao": taxa
     }
