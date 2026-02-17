@@ -74,3 +74,23 @@ def atualizar_lead(lead_id: int, lead: LeadUpdate):
     conn.commit()
 
     return {"msg": "Lead atualizado com sucesso"}
+
+@router.delete("/leads/{lead_id}")
+def deletar_lead(lead_id: int):
+
+    cursor.execute(
+        "SELECT * FROM leads WHERE id=? AND deleted=0",
+        (lead_id,)
+    )
+    lead = cursor.fetchone()
+
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead não encontrado")
+
+    cursor.execute(
+        "UPDATE leads SET deleted=1 WHERE id=?",
+        (lead_id,)
+    )
+    conn.commit()
+
+    return {"msg": "Lead deletado com sucesso"}

@@ -10,7 +10,7 @@ def criar_lead(nome, telefone, carro, status):
 
 
 def listar_leads(filtros, limit, offset):
-    query = "SELECT * FROM leads WHERE 1=1"
+    query = "SELECT * FROM leads WHERE deleted=0"
     params = []
 
     if filtros.get("status"):
@@ -33,6 +33,7 @@ def estatisticas():
     cursor.execute("""
         SELECT status, COUNT(*) as total
         FROM leads
+        WHERE deleted=0
         GROUP BY status
     """)
 
