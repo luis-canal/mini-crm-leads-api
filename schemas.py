@@ -17,3 +17,9 @@ class LeadResponse(BaseModel):
 class EstatisticaResponse(BaseModel):
     status: str
     total: int
+
+class LeadUpdate(BaseModel):
+    nome: Optional[str] = None
+    telefone: Optional[str] = None
+    carro: Optional[str] = None
+    status: Optional[str] = None
