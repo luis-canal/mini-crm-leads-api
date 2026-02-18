@@ -23,3 +23,18 @@ class LeadUpdate(BaseModel):
     telefone: Optional[str] = None
     carro: Optional[str] = None
     status: Optional[str] = None
+
+class LeadResponse(BaseModel):
+    id: int
+    nome: str
+    telefone: str
+    carro: str | None
+    status: str
+    created_at: str
+    updated_at: str
+
+class LeadListResponse(BaseModel):
+    total: int
+    page: int
+    limit: int
+    data: list[LeadResponse]
