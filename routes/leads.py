@@ -66,7 +66,7 @@ def atualizar_lead(lead_id: int, lead: LeadUpdate):
 
     query = f"""
     UPDATE leads
-    SET {', '.join(campos)}
+    SET {', '.join(campos)}, updated_at=CURRENT_TIMESTAMP
     WHERE id=?
     """
 

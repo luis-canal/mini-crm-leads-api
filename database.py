@@ -9,11 +9,13 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS leads (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT,
-    telefone TEXT,
+    nome TEXT NOT NULL,
+    telefone TEXT NOT NULL,
     carro TEXT,
-    status TEXT,
-    deleted INTEGER DEFAULT 0
+    status TEXT DEFAULT 'novo',
+    deleted INTEGER DEFAULT 0,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 )
 """)
 conn.commit()
