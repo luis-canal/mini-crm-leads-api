@@ -2,20 +2,30 @@ from fastapi import APIRouter, Query, HTTPException
 from schemas import LeadCreate, LeadUpdate
 from services import leads_service
 from database import cursor, conn
+from logger import logger
 
 
 router = APIRouter()
 
 @router.post("/leads")
 def criar_lead(lead: LeadCreate):
-    id = leads_service.criar_lead(
-        lead.nome,
-        lead.telefone,
-        lead.carro,
-        lead.status
-    )
 
-    return {"id": id}
+    try:
+        cursor.execute(
+            "INSERT INTO leads (nome, telefone, carro, status) VALUES (?, ?, ?, ?)",
+            (lead.nome, lead.telefone, lead.carro, "novo")
+        )
+        conn.commit()
+
+        lead_id = cursor.lastrowid
+
+        logger.info(f"Lead criado com ID {lead_id}")
+
+        return {"id": lead_id}
+
+    except Exception as e:
+        logger.error(f"Erro ao criar lead: {str(e)}")
+        raise
 
 
 @router.get("/leads")
@@ -73,6 +83,8 @@ def atualizar_lead(lead_id: int, lead: LeadUpdate):
     cursor.execute(query, valores)
     conn.commit()
 
+    logger.info(f"Lead atualizado com sucesso: ID {lead_id}")
+
     return {"msg": "Lead atualizado com sucesso"}
 
 @router.delete("/leads/{lead_id}")
@@ -92,5 +104,7 @@ def deletar_lead(lead_id: int):
         (lead_id,)
     )
     conn.commit()
+
+    logger.warning(f"Lead marcado como deletado: ID {lead_id}")
 
     return {"msg": "Lead deletado com sucesso"}
