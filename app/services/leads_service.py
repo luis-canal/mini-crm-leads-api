@@ -1,4 +1,4 @@
-from database import cursor, conn
+from app.database import cursor, conn
 
 def criar_lead(nome, telefone, carro, status):
     cursor.execute(
