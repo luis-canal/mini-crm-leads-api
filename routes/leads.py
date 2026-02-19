@@ -1,14 +1,18 @@
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, HTTPException, Depends
 from schemas import LeadCreate, LeadUpdate
 from services import leads_service
 from database import cursor, conn
 from logger import logger
+from security import verify_api_key
 
 
 router = APIRouter()
 
 @router.post("/leads")
-def criar_lead(lead: LeadCreate):
+def criar_lead(
+    lead: LeadCreate,
+    api_key: str = Depends(verify_api_key)
+    ):
 
     try:
         cursor.execute(
@@ -33,7 +37,8 @@ def listar_leads(
     status: str = None,
     carro: str = None,
     page: int = 1,
-    limit: int = 10
+    limit: int = 10,
+    api_key: str = Depends(verify_api_key)
 ):
     offset = (page - 1) * limit
 
@@ -52,7 +57,7 @@ def estatisticas():
     return leads_service.estatisticas()
 
 @router.patch("/leads/{lead_id}")
-def atualizar_lead(lead_id: int, lead: LeadUpdate):
+def atualizar_lead(lead_id: int, lead: LeadUpdate, api_key: str = Depends(verify_api_key)):
 
     # verifica se existe
     cursor.execute("SELECT * FROM leads WHERE id=?", (lead_id,))
@@ -88,7 +93,7 @@ def atualizar_lead(lead_id: int, lead: LeadUpdate):
     return {"msg": "Lead atualizado com sucesso"}
 
 @router.delete("/leads/{lead_id}")
-def deletar_lead(lead_id: int):
+def deletar_lead(lead_id: int, api_key: str = Depends(verify_api_key)):
 
     cursor.execute(
         "SELECT * FROM leads WHERE id=? AND deleted=0",

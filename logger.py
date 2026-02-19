@@ -1,11 +1,8 @@
 import logging
-from config import API_KEY
 
 logging.basicConfig(
-    filename="app.log",
     level=logging.INFO,
-    format="%(asctime)s - %(levelname) - %(messages)s"
+    format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-logger = logging.getLogger(__name__)
-
+logger = logging.getLogger("crm_api")
