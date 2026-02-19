@@ -1,4 +1,5 @@
 import logging
+from config import API_KEY
 
 logging.basicConfig(
     filename="app.log",

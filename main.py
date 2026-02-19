@@ -2,8 +2,12 @@ from fastapi import FastAPI, Request
 from routes.leads import router
 from fastapi.responses import JSONResponse
 from logger import logger
+from config import APP_NAME, VERSION
 
-app = FastAPI()
+app = FastAPI(
+    tittle=APP_NAME,
+    version=VERSION
+)
 
 app.include_router(router)
 
