@@ -9,6 +9,13 @@ app = FastAPI(
     version=VERSION
 )
 
+@app.get("/health", tags=["Health"])
+def health():
+    return {
+        "status": "ok",
+        "service": "mini-crm-leads-api"
+    }
+
 app.include_router(router)
 
 @app.exception_handler(Exception)
