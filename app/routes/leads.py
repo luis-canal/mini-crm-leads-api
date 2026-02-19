@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
-from schemas import LeadCreate, LeadUpdate
+from app.schemas import LeadCreate, LeadUpdate
 from services import leads_service
-from database import cursor, conn
-from logger import logger
-from security import verify_api_key
+from app.database import cursor, conn
+from app.logger import logger
+from app.security import verify_api_key
 
 
 router = APIRouter()

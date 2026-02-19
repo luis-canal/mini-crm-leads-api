@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Request
 from routes.leads import router
 from fastapi.responses import JSONResponse
-from logger import logger
-from config import APP_NAME, VERSION
+from app.logger import logger
+from app.config import APP_NAME, VERSION
 
 app = FastAPI(
     tittle=APP_NAME,
