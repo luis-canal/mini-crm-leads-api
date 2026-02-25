@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, HTTPException, Depends
 from app.schemas import LeadCreate, LeadUpdate
-from services import leads_service
+from app.services import leads_service
 from app.database import cursor, conn
 from app.logger import logger
 from app.security import verify_api_key

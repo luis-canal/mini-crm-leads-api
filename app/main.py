@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from routes.leads import router
+from app.routes.leads import router
 from fastapi.responses import JSONResponse
 from app.logger import logger
 from app.config import APP_NAME, VERSION
